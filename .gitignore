@@ -139,3 +139,6 @@ cython_debug/
 
 # Don't include ANY YAML
 *.yml
+
+# Don't include ANY script
+*.sh
