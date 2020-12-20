@@ -7,91 +7,45 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from config import channel_access_token, channel_secret
 
 from fsm import TocMachine
-from utils import send_text_message
+from line import webhook_parser, LineAPI
 
-machine = TocMachine(
-    states=["user", "state1", "state2"],
-    transitions=[
-        {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
-        },
-        {
-            "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
-        },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
-    ],
-    initial="user",
-    auto_transitions=False,
-    show_conditions=True,
-)
-
-line_bot_api = LineBotApi(channel_access_token)
-parser = WebhookParser(channel_secret)
+machines = {}
 
 app = Flask(__name__, static_url_path="")
 
-@app.route("/callback", methods=["POST"])
-def callback():
-    signature = request.headers["X-Line-Signature"]
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+def inputHandler(machineState, replyToken, userId, message):
+    app.logger.info(f"Handling state: {machineState}")
+    if state == "init":
+        machines[userId].advance(replyToken, message)
+    if state == "options":
+        machines[userId].chooseOption(replyToken, message)
+    if state == "latestCheck":
+        machines[userId].enterLatestPrice(replyToken, message)
+    if state == "historicalCheck":
+        machines[userId].enterHistoricalPrice(replyToken, message)
+    if state == "latestPrice" or state == "historicalPrice":
+        machines[userId].goNewsOrGoBack(replyToken, message)
+    if state == "newsCheck":
+        machines[userId].enterNews(replyToken, message)
 
-    # parse webhook body
-    try:
-        events = parser.parse(body, signature)
-    except InvalidSignatureError:
-        abort(400)
-
-    # if event is MessageEvent and message is TextMessage, then echo text
-    for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
-
-    return "OK"
-
+@app.route("/", methods=["GET"])
+def working():
+    return "The bot is working!"
 
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
-    signature = request.headers["X-Line-Signature"]
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info(f"Request body: {body}")
+    webhook = json.loads(request.data.decode("utf-8"))
+    replyToken, userId, message = webhook_parser(webhook)
 
-    # parse webhook body
-    try:
-        events = parser.parse(body, signature)
-    except InvalidSignatureError:
-        abort(400)
+    app.logger.info(f"Reply Token: {replyToken}")
+    app.logger.info(f"User ID: {userId}")
+    app.logger.info(f"Message: {message}")
 
-    # if event is MessageEvent and message is TextMessage, then echo text
-    for event in events:
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-        if not isinstance(event.message.text, str):
-            continue
-        app.logger.info(f"\nFSM STATE: {machine.state}")
-        app.logger.info(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
-        if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+    if userId not in machines:
+        machines[userId] = TocMachine()
 
-    return "OK"
-
+    inputHandler(machines[userId].state, replyToken, userId, message)
+    return jsonify({})
 
 @app.route("/show-fsm", methods=["GET"])
 def show_fsm():
