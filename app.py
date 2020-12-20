@@ -1,17 +1,13 @@
 import os
-import sys
-
 from flask import Flask, jsonify, request, abort, send_file
-from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
+from config import channel_access_token, channel_secret
+
 from fsm import TocMachine
 from utils import send_text_message
-
-load_dotenv()
-
 
 machine = TocMachine(
     states=["user", "state1", "state2"],
@@ -35,22 +31,10 @@ machine = TocMachine(
     show_conditions=True,
 )
 
-app = Flask(__name__, static_url_path="")
-
-
-# get channel_secret and channel_access_token from your environment variable
-channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
-channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
-if channel_secret is None:
-    print("Specify LINE_CHANNEL_SECRET as environment variable.")
-    sys.exit(1)
-if channel_access_token is None:
-    print("Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.")
-    sys.exit(1)
-
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
+app = Flask(__name__, static_url_path="")
 
 @app.route("/callback", methods=["POST"])
 def callback():
