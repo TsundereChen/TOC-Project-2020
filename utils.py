@@ -7,8 +7,7 @@ try:
 except ImportError:
     from yaml import Loader, Dumper
 from influxdb import InfluxDBClient
-
-channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
+from config import channel_access_token
 
 def send_text_message(reply_token, text):
     line_bot_api = LineBotApi(channel_access_token)
