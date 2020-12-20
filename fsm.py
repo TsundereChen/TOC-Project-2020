@@ -5,32 +5,111 @@ from utils import send_text_message
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
-        self.machine = GraphMachine(model=self, **machine_configs)
-
-    def is_going_to_state1(self, event):
-        text = event.message.text
-        return text.lower() == "go to state1"
-
-    def is_going_to_state2(self, event):
-        text = event.message.text
-        return text.lower() == "go to state2"
-
-    def on_enter_state1(self, event):
-        print("I'm entering state1")
-
-        reply_token = event.reply_token
-        send_text_message(reply_token, "Trigger state1")
-        self.go_back()
-
-    def on_exit_state1(self):
-        print("Leaving state1")
-
-    def on_enter_state2(self, event):
-        print("I'm entering state2")
-
-        reply_token = event.reply_token
-        send_text_message(reply_token, "Trigger state2")
-        self.go_back()
-
-    def on_exit_state2(self):
-        print("Leaving state2")
+        self.lastCheckCurrency = "N/A"
+        self.machine = GraphMachine(
+                model = self,
+                **{
+                    "states": [
+                        'init',
+                        'options',
+                        'latestCheck',
+                        'historicalCheck',
+                        'latestPrice',
+                        'historicalPrice',
+                        'newsCheck',
+                        'news'
+                    ],
+                    "transitions": [
+                        {
+                            'trigger': 'advance',
+                            'source': 'init',
+                            'dest': 'options'
+                        },
+                        {
+                            'trigger': 'chooseOption',
+                            'source': 'options',
+                            'dest': 'latestCheck',
+                            'conditions': 'choosedLatest',
+                        },
+                        {
+                            'trigger': 'chooseOption',
+                            'source': 'options',
+                            'dest': 'historicalCheck',
+                            'conditions': 'choosedHistorical'
+                        },
+                        {
+                            'trigger': 'chooseOption',
+                            'source': 'options',
+                            'dest': 'newsCheck',
+                            'conditions': 'choosedNews'
+                        },
+                        {
+                            'trigger': 'enterLatestPrice',
+                            'source': 'latestCheck',
+                            'dest': 'latestPrice',
+                            'conditions': 'validCryptocurrency'
+                        },
+                        {
+                            'trigger': 'enterLatestPrice',
+                            'source': 'latestCheck',
+                            'dest': 'options',
+                            'conditions': 'invalidCryptocurrency'
+                        },
+                        {
+                            'trigger': 'goNewsOrGoBack',
+                            'source': 'latestPrice',
+                            'dest': 'news',
+                            'conditions': 'goNews'
+                        },
+                        {
+                            'trigger': 'goNewsorGoBack',
+                            'source': 'latestPrice',
+                            'dest': 'options',
+                            'conditions': 'goBackOptions',
+                        },
+                        {
+                            'trigger': 'enterHistoricalPrice',
+                            'source': 'historicalCheck',
+                            'dest': 'historicalPrice',
+                            'conditions': 'validCryptocurrency'
+                        },
+                        {
+                            'trigger': 'enterHistroicalPrice',
+                            'source': 'historicalCheck',
+                            'dest': 'options',
+                            'conditions': 'invalidCryptocurrency'
+                        },
+                        {
+                            'trigger': 'goNewsOrGoBack',
+                            'source': 'historicalPrice',
+                            'dest': 'news',
+                            'conditions': 'goNews'
+                        },
+                        {
+                            'trigger': 'goNewsOrGoBack',
+                            'source': 'historicalPrice',
+                            'dest': 'options',
+                            'conditions': 'goBackOptions'
+                        },
+                        {
+                            'trigger': 'enterNews',
+                            'source': 'newsCheck',
+                            'dest': 'news',
+                            'conditions': 'validCryptocurrency'
+                        },
+                        {
+                            'trigger': 'enterNews',
+                            'source': 'newsCheck',
+                            'dest': 'options',
+                            'conditions': 'invalidCryptocurrency'
+                        },
+                        {
+                            'trigger': 'goBackOptions',
+                            'source': 'news',
+                            'dest': 'options'
+                        }
+                    ],
+                    "initial": 'init',
+                    "auto_transitions": False,
+                }
+            )
