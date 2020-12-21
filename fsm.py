@@ -68,7 +68,7 @@ class TocMachine(GraphMachine):
                             'conditions': 'choosedNews'
                         },
                         {
-                            'trigger': 'goNewsorGoBack',
+                            'trigger': 'goNewsOrGoBack',
                             'source': 'latestPrice',
                             'dest': 'options',
                             'conditions': 'choosedOptions',
