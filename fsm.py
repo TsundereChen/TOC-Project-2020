@@ -142,7 +142,6 @@ class TocMachine(GraphMachine):
         if len(message) > 5:
             return True
         result = client.query(generateQueryString(message, "latest"))
-        LineAPI.sendReplyMessage(replyToken, "You entered invalid cryptocurrency!")
         if queryValidChecker(result):
             return False
         else:
@@ -162,7 +161,8 @@ class TocMachine(GraphMachine):
         prompt_str = (
                 "Please enter the cryptocurrency you want to query.\n" +
                 "For example, if you want to check Bitcoin, enter BTC.\n" +
-                "If you want to check Ethereum, enter ETH."
+                "If you want to check Ethereum, enter ETH.\n" +
+                "If you entered invalid currency, you will be redirected back to options."
                 )
         LineAPI.sendReplyMessage(replyToken, prompt_str)
 
