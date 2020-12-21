@@ -136,7 +136,7 @@ class TocMachine(GraphMachine):
     def invalidCryptocurrency(self, replyToken, message):
         if len(message) > 5:
             return True
-        result = client.query(generateQueryString(message "latest"))
+        result = client.query(generateQueryString(message, "latest"))
         LineAPI.sendReplyMessage(replyToken, "You entered invalid cryptocurrency!")
         return !queryValidChecker(result)
 
