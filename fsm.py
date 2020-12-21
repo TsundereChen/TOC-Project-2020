@@ -200,7 +200,7 @@ class TocMachine(GraphMachine):
 
     def on_enter_newsCheck(self, replyToken, message):
         prompt_str = (
-                "Please enter the keyword you want to search.\n" +
+                "Please enter the keyword you want to search.\n"
             )
         LineAPI.sendReplyMessage(replyToken, prompt_str)
 
