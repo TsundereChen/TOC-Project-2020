@@ -24,7 +24,9 @@ def inputHandler(machineState, replyToken, userId, message):
         machines[userId].enterLatestPrice(replyToken, message)
     if machineState == "historicalCheck":
         machines[userId].enterHistoricalPrice(replyToken, message)
-    if machineState == "latestPrice" or machineState == "historicalPrice":
+    if machineState == "latestPrice":
+        machines[userId].goNewsOrGoBack(replyToken, message)
+    if machineState == "historicalPrice":
         machines[userId].goNewsOrGoBack(replyToken, message)
     if machineState == "newsCheck":
         machines[userId].enterNews(replyToken, message)
