@@ -207,10 +207,14 @@ class TocMachine(GraphMachine):
     def on_enter_news(self, replyToken, message):
         if message == '3':
             newsString = getNews(self.lastCheckCurrency)
+            newsString = (
+                "The news about " + self.lastCheckCurrency + ".\n\n" +
+                newsString
+            )
         else:
             newsString = getNews(message)
-        newsString = (
-                "The news about " + self.lastCheckCurrency + ".\n\n" +
+            newsString = (
+                "The news about " + message  + ".\n\n" +
                 newsString
             )
         LineAPI.sendReplyMessage(replyToken, newsString)

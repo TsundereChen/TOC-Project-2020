@@ -32,6 +32,8 @@ def getNews(currency):
         article = articles[i]
         title = article["title"]
         url = article["url"]
-        articleStr = title + "\n" + url + "\n\n"
+        articleStr = title + "\n" + url + "\n"
+        if i != 4:
+            articleStr += "\n"
         returnString += articleStr
     return returnString
