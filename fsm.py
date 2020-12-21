@@ -169,11 +169,14 @@ class TocMachine(GraphMachine):
     def on_enter_latestPrice(self, replyToken, message):
         result = client.query(generateQueryString(message, "latest"))
         price = priceParser(result)
-        returnString = "The price of " + str(message) + " is " + str(price) + " USD now."
+        returnString = (
+                "The price of " +
+                str(message) +
+                " is " +
+                str(price) +
+                " USD now.\n" +
+                "[News] If you want to check the news, enter 3.\n" +
+                "[Options] If you want to go back to options, enter 0.\n"
+            )
         self.lastCheckCurrency = str(message)
-        LineAPI.sendReplyMessage(replyToken, returnString)
-        returnString = """
-        [News] If you want to check the news, enter 3
-        [Options] If you want to go back to options, enter 0
-        """
         LineAPI.sendReplyMessage(replyToken, returnString)
