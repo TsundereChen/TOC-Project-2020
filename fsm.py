@@ -173,7 +173,7 @@ class TocMachine(GraphMachine):
                 "The price of " +
                 str(message) +
                 " is " +
-                str(price) +
+                str(round(price, 2)) +
                 " USD now.\n" +
                 "[News] If you want to check the news, enter 3.\n" +
                 "[Options] If you want to go back to options, enter 0.\n"
