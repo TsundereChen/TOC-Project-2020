@@ -6,3 +6,5 @@ influxdb:
   port: '<PORT>'
   username: '<USERNAME>'
   password: '<PASSWORD>'
+newsapi:
+  apikey: '<API_KEY>'
