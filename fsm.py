@@ -149,22 +149,22 @@ class TocMachine(GraphMachine):
             return True
 
     def on_enter_options(self, replyToken, message):
-        options_str = """
-        Welcome to use cryptocurrency price checker.
-
-        [Latest] For the latest price, please enter 1.
-        [Historical] For historical price, please enter 2.
-        [News] For related news, please enter 3.
-        """
+        options_str = (
+        "Welcome to use cryptocurrency price checker.\n" +
+        "\n" +
+        "[Latest] For the latest price, please enter 1.\n" +
+        "[Historical] For historical price, please enter 2.\n" +
+        "[News] For related news, please enter 3."
+        )
         LineAPI.sendReplyMessage(replyToken, options_str)
 
     def on_enter_latestCheck(self, replyToken, message):
-        prompt_str = """
-        Please enter the cryptocurrency you want to query.
-        For example, if you want to check Bitcoin, enter BTC.
-        If you want to check Ethereum, enter ETH.
-        """
-        LineAPI.sendReplyMessage(replyToken, message)
+        prompt_str = (
+                "Please enter the cryptocurrency you want to query.\n" +
+                "For example, if you want to check Bitcoin, enter BTC.\n" +
+                "If you want to check Ethereum, enter ETH."
+                )
+        LineAPI.sendReplyMessage(replyToken, prompt_str)
 
     def on_enter_latestPrice(self, replyToken, message):
         result = client.query(generateQueryString(message, "latest"))
