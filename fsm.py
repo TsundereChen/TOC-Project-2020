@@ -213,5 +213,5 @@ class TocMachine(GraphMachine):
                 "The news about " + self.lastCheckCurrency + ".\n\n" +
                 newsString
             )
-        LineAPI.sendReplyMessage(replyToken, returnString)
+        LineAPI.sendReplyMessage(replyToken, newsString)
         self.goBackOptions(reply_token, message)
