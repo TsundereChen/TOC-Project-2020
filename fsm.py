@@ -1,6 +1,6 @@
 from transitions.extensions import GraphMachine
 
-from utils import generateQueryString, queryValidChecker, priceParser
+from utils import generateQueryString, queryValidChecker, priceParser, getNews
 
 from line import LineAPI
 
