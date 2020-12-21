@@ -2,6 +2,8 @@ from transitions.extensions import GraphMachine
 
 from utils import generateQueryString, queryValidChecker, priceParser
 
+from line import LineAPI
+
 from config import influxdb_host, influxdb_port, influxdb_username, influxdb_password
 from influxdb import InfluxDBClient
 
