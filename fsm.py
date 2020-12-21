@@ -214,4 +214,4 @@ class TocMachine(GraphMachine):
                 newsString
             )
         LineAPI.sendReplyMessage(replyToken, newsString)
-        self.goBackOptions(reply_token, message)
+        self.goBackOptions(replyToken, message)
