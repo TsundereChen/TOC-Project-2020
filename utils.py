@@ -1,3 +1,8 @@
+from newsapi import NewsApiClient
+from config import newsapi_apikey
+
+newsapi = NewsApiClient(api_key=newsapi_apikey)
+
 def generateQueryString(coin, queryType):
     if queryType == "latest":
         return 'select last("' + str(coin) + '") from coinmarketcap.autogen.price'
@@ -18,3 +23,15 @@ def priceParser(resultSet):
     response = response[0]
     price = response["last"]
     return price
+
+def getNews(currency):
+    top_headlines = newsapi.get_everything(q=currency, language='en')
+    articles = top_headlines["articles"]
+    returnString = ""
+    for i in range(5):
+        article = articles[i]
+        title = article["title"]
+        url = article["url"]
+        articleStr = "<a href=\"" + url + "\">" + title + "</a>\n"
+        returnString += articleStr
+    return returnString
