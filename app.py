@@ -16,17 +16,17 @@ app = Flask(__name__, static_url_path="")
 
 def inputHandler(machineState, replyToken, userId, message):
     app.logger.info(f"Handling state: {machineState}")
-    if state == "init":
+    if machineState == "init":
         machines[userId].advance(replyToken, message)
-    if state == "options":
+    if machineState == "options":
         machines[userId].chooseOption(replyToken, message)
-    if state == "latestCheck":
+    if machineState == "latestCheck":
         machines[userId].enterLatestPrice(replyToken, message)
-    if state == "historicalCheck":
+    if machineState == "historicalCheck":
         machines[userId].enterHistoricalPrice(replyToken, message)
-    if state == "latestPrice" or state == "historicalPrice":
+    if machineState == "latestPrice" or machineState == "historicalPrice":
         machines[userId].goNewsOrGoBack(replyToken, message)
-    if state == "newsCheck":
+    if machineState == "newsCheck":
         machines[userId].enterNews(replyToken, message)
 
 @app.route("/", methods=["GET"])
