@@ -7,7 +7,6 @@ from config import channel_secret, channel_access_token
 lineBotApi = LineBotApi(channel_access_token)
 
 def webhook_parser(webhook):
-    signature = 
     event = webhook["events"][0]
     replyToken = event["replyToken"]
     userId = event["source"]["userId"]
