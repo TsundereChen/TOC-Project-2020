@@ -169,12 +169,36 @@ class TocMachine(GraphMachine):
     def on_enter_latestPrice(self, replyToken, message):
         result = client.query(generateQueryString(message, "latest"))
         price = priceParser(result)
+        price = round(price, 2)
         returnString = (
-                "The price of " +
-                str(message) +
-                " is " +
-                str(round(price, 2)) +
-                " USD now.\n" +
+                "The price of " + str(message) + " is " + str(price) + " USD now.\n\n" +
+                "[News] If you want to check the news, enter 3.\n" +
+                "[Options] If you want to go back to options, enter 0.\n"
+            )
+        self.lastCheckCurrency = str(message)
+        LineAPI.sendReplyMessage(replyToken, returnString)
+
+    def on_enter_historicalCheck(self, replyToken, message):
+        prompt_str = (
+                "Please enter the cryptocurrency you want to query.\n" +
+                "For example, if you want to check Bitcoin, enter BTC.\n" +
+                "If you want to check Ethereum, enter ETH.\n" +
+                "If you entered invalid currency, you will be redirected back to options."
+            )
+        LineAPI.sendReplyMessage(replyToken, prompt_str)
+
+    def on_enter_historicalPrice(self, replyToken, message):
+        latest = client.query(generateQueryString(message, "latest"))
+        latestPrice = priceParser(latest)
+        latestPrice = round(latestPrice, 2)
+        historical = client.query(generateQueryString(message, "historical"))
+        historicalPrice = priceParser(historical)
+        historicalPrice = round(historicalPrice, 2)
+        growthRate = round(float((latestPrice - historicalPrice) / historicalPrice), 4)
+        returnString = (
+                "The current price of " + str(message) + " is " + str(latestPrice) + " USD now.\n" +
+                "The price 24 hours ago is " + str(historicalPrice) + " USD.\n" +
+                "The growth rate is " + str(growthRate * 100) + "%.\n\n" +
                 "[News] If you want to check the news, enter 3.\n" +
                 "[Options] If you want to go back to options, enter 0.\n"
             )
