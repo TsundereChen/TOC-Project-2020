@@ -1,24 +1,20 @@
-import os
-from linebot import LineBotApi, WebhookParser
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from yaml import load, dump
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
-from influxdb import InfluxDBClient
-from config import channel_access_token
+def generateQueryString(coin, queryType):
+    if queryType == "latest":
+        return 'select last("' + str(coin) + '") from coinmarketcap.autogen.price'
+    if queryType == "historical":
+        return 'select last("' + str(coin) + '") from coinmarketcap.autogen.price where time < now() - 24h'
+    else:
+        return "INVALID"
 
-def send_text_message(reply_token, text):
-    line_bot_api = LineBotApi(channel_access_token)
-    line_bot_api.reply_message(reply_token, TextSendMessage(text=text))
+def queryValidChecker(resultSet):
+    response = list(resultSet.get_points(measurement='price'))
+    if len(response) != 0:
+        return True
+    else:
+        return False
 
-    return "OK"
-
-"""
-def send_image_url(id, img_url):
-    pass
-
-def send_button_message(id, text, buttons):
-    pass
-"""
+def priceParser(resultSet):
+    response = list(resultSet.get_points(measurement='price'))
+    response = response[0]
+    price = response["last"]
+    return price
