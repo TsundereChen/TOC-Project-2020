@@ -32,6 +32,6 @@ def getNews(currency):
         article = articles[i]
         title = article["title"]
         url = article["url"]
-        articleStr = "<a href=\"" + url + "\">" + title + "</a>\n"
+        articleStr = title + "\n" + url + "\n\n"
         returnString += articleStr
     return returnString
