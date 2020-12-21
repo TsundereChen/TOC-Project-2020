@@ -121,13 +121,13 @@ class TocMachine(GraphMachine):
             )
 
     def choosedLatest(self, replyToken, message):
-        return text == "1"
+        return message == "1"
     def choosedHistorical(self, replyToken, message):
-        return text == "2"
+        return message == "2"
     def choosedNews(self, replyToken, message):
-        return text == "3"
+        return message == "3"
     def choosedOptions(self, replyToken, message):
-        return text == "0"
+        return message == "0"
 
     def validCryptocurrency(self, replyToken, message):
         if len(message) > 5:
