@@ -100,14 +100,7 @@ class TocMachine(GraphMachine):
                         {
                             'trigger': 'enterNews',
                             'source': 'newsCheck',
-                            'dest': 'news',
-                            'conditions': 'validCryptocurrency'
-                        },
-                        {
-                            'trigger': 'enterNews',
-                            'source': 'newsCheck',
-                            'dest': 'options',
-                            'conditions': 'invalidCryptocurrency'
+                            'dest': 'news'
                         },
                         {
                             'trigger': 'goBackOptions',
@@ -173,7 +166,7 @@ class TocMachine(GraphMachine):
         returnString = (
                 "The price of " + str(message) + " is " + str(price) + " USD now.\n\n" +
                 "[News] If you want to check the news, enter 3.\n" +
-                "[Options] If you want to go back to options, enter 0.\n"
+                "[Options] If you want to go back to options, enter 0."
             )
         self.lastCheckCurrency = str(message)
         LineAPI.sendReplyMessage(replyToken, returnString)
@@ -200,7 +193,25 @@ class TocMachine(GraphMachine):
                 "The price 24 hours ago is " + str(historicalPrice) + " USD.\n" +
                 "The growth rate is " + str(growthRate * 100) + "%.\n\n" +
                 "[News] If you want to check the news, enter 3.\n" +
-                "[Options] If you want to go back to options, enter 0.\n"
+                "[Options] If you want to go back to options, enter 0."
             )
         self.lastCheckCurrency = str(message)
         LineAPI.sendReplyMessage(replyToken, returnString)
+
+    def on_enter_newsCheck(self, replyToken, message):
+        prompt_str = (
+                "Please enter the keyword you want to search.\n" +
+            )
+        LineAPI.sendReplyMessage(replyToken, prompt_str)
+
+    def on_enter_news(self, replyToken, message):
+        if message == '3':
+            newsString = getNews(self.lastCheckCurrency)
+        else:
+            newsString = getNews(message)
+        newsString = (
+                "The news about " + self.lastCheckCurrency + ".\n\n" +
+                newsString
+            )
+        LineAPI.sendReplyMessage(replyToken, returnString)
+        self.goBackOptions(reply_token, message)
