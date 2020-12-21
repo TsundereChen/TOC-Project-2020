@@ -131,14 +131,20 @@ class TocMachine(GraphMachine):
         if len(message) > 5:
             return False
         result = client.query(generateQueryString(message, "latest"))
-        return queryValidChecker(result)
+        if queryValidChecker(result):
+            return True
+        else:
+            return False
 
     def invalidCryptocurrency(self, replyToken, message):
         if len(message) > 5:
             return True
         result = client.query(generateQueryString(message, "latest"))
         LineAPI.sendReplyMessage(replyToken, "You entered invalid cryptocurrency!")
-        return !queryValidChecker(result)
+        if queryValidChecker(result):
+            return False
+        else:
+            return True
 
     def on_enter_options(self, replyToken, message):
         options_str = """
