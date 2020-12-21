@@ -217,5 +217,14 @@ class TocMachine(GraphMachine):
                 "The news about " + message  + ".\n\n" +
                 newsString
             )
+
+        options_str = (
+        "Welcome to use cryptocurrency price checker.\n" +
+        "\n" +
+        "[Latest] For the latest price, please enter 1.\n" +
+        "[Historical] For historical price, please enter 2.\n" +
+        "[News] For related news, please enter 3."
+        )
+        newsString += options_str
         LineAPI.sendReplyMessage(replyToken, newsString)
         self.goBackOptions(replyToken, message)
