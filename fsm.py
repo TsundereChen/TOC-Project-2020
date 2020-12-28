@@ -60,7 +60,7 @@ class TocMachine(GraphMachine):
                             'trigger': 'FooBar',
                             'source': 'bar',
                             'dest': 'options'
-                        }
+                        },
                         {
                             'trigger': 'enterLatestPrice',
                             'source': 'latestCheck',
