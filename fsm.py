@@ -23,7 +23,8 @@ class TocMachine(GraphMachine):
                         'latestPrice',
                         'historicalPrice',
                         'newsCheck',
-                        'news'
+                        'news',
+                        'bar'
                     ],
                     "transitions": [
                         {
@@ -49,6 +50,17 @@ class TocMachine(GraphMachine):
                             'dest': 'newsCheck',
                             'conditions': 'choosedNews'
                         },
+                        {
+                            'trigger': 'choosedBar',
+                            'source': 'options',
+                            'dest': 'bar',
+                            'conditions': 'choosedBar'
+                        },
+                        {
+                            'trigger': 'FooBar',
+                            'source': 'bar',
+                            'dest': 'options'
+                        }
                         {
                             'trigger': 'enterLatestPrice',
                             'source': 'latestCheck',
@@ -119,6 +131,8 @@ class TocMachine(GraphMachine):
         return message == "2"
     def choosedNews(self, replyToken, message):
         return message == "3"
+    def choosedBar(self, replyToken, message):
+        return message == "4"
     def choosedOptions(self, replyToken, message):
         return message == "0"
 
@@ -146,9 +160,13 @@ class TocMachine(GraphMachine):
         "\n" +
         "[Latest] For the latest price, please enter 1.\n" +
         "[Historical] For historical price, please enter 2.\n" +
-        "[News] For related news, please enter 3."
+        "[News] For related news, please enter 3. \n" +
+        "[Bar] FooBar, enter 4."
         )
         LineAPI.sendReplyMessage(replyToken, options_str)
+
+    def on_enter_bar(self, replyToken, message):
+        LineAPI.sendReplyMessage(replyToken, "FooBar!")
 
     def on_enter_latestCheck(self, replyToken, message):
         prompt_str = (

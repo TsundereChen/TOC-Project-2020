@@ -30,6 +30,8 @@ def inputHandler(machineState, replyToken, userId, message):
         machines[userId].goNewsOrGoBack(replyToken, message)
     if machineState == "newsCheck":
         machines[userId].enterNews(replyToken, message)
+    if machineState == "bar":
+        machines[userId].FooBar(replyToken, message)
 
 @app.route("/", methods=["GET"])
 def working():
